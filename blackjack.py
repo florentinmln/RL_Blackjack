@@ -9,9 +9,12 @@ import gymnasium as gym
 # https://gymnasium.farama.org/introduction/create_custom_env/
 # C'est la doc de gym si il faut. 
 
+# Image de : https://fr.freepik.com/auteur/macrovector.
+# Lien des images : https://fr.freepik.com/vecteurs-libre/poker-cartes-icones-collection_1045019.htm#fromView=search&page=1&position=28&uuid=8c1bb531-6063-4e6d-8b00-0f058a80e24f&query=jeu+de+carte+pixel
+
 class BlackJackEnv(gym.Env):
 
-    def __init__(self, deck_size: int = 32):
+    def __init__(self):
         # To Do
         # Init de l'environnement, création des main pour les joueurs.
         # On passe en param la taille du deck, je ne sais pas si c'est pertinent mais bon je trouve ca cool.
@@ -24,25 +27,40 @@ class BlackJackEnv(gym.Env):
         # Important: permet de set la seed pour tout le random.
         super().reset(seed=seed)
         
+        # On reset la variable qui finit un épisode.
         self.done = False
 
+        # On utilise la fonction reset de l'objet deck pour recommencer un épisode.
         self.deck.reset()
 
+        # On réinitialise le score du joueur mais pas le compteur de victoire et de défaite.
         self.player.score = 0
+
+        # On tire deux cartes pour reset la main du joueur
         self.player.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
         self.player.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
+        
+        # On calcule le score du joueur.
         self.player.score_calcul()
 
+        # On réinitialise le score du dealer 
         self.dealer.score = 0
+
+        # On tire deux cartes pour la main initial du dealer 
         self.dealer.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
         self.dealer.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
+
+        # On calcule le score du dealer
         self.dealer.score_calcul()
 
+        # On récupère ine observation de l'épisode en cours
         obs = self._get_obs()
         
+        # Si on a besoin de faire un affichage on appelle la fonction render.
         if self.render_mode == "human":
             self.render()
 
+        # On retourne l'observation, si on veut on peut ajouter une fonction info et donc retourner cette valeur aussi. 
         return obs
         
     def step(self, action):
@@ -63,7 +81,7 @@ class BlackJackEnv(gym.Env):
                 print("CONTINUE")
             print("--------------------------------------")
         elif(self.render_mode == "human"):
-
+            # Pas complet pour faire jouer l'agent dessus. A améliorer.
             # Pour ne pas redéfinir la fenetre pour chaque tour.
             if self.window is None:
                 # Création de la fenetre.
