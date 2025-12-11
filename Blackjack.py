@@ -37,17 +37,9 @@ class BlackJackEnv(gym.Env):
 
         self.player.hand = self.start_hand()
         self.dealer.hand = self.start_hand()
-        
-        self.window = None
-        self.clock = None
-        self.done = False
-
-        self.render()
 
         self.score_dealer()
         self.score_player()
-
-        self.render()
 
         # Define what the agent can observe
         # Dict space gives us structured, human-readable observations
@@ -64,6 +56,13 @@ class BlackJackEnv(gym.Env):
         # Map action numbers to actual movements on the grid
         # This makes the code more readable than using raw numbers
         self._action_to_direction = ["STAND", "PICK"]
+
+        self.render_mode = render_mode
+        
+        self.window = None
+        self.clock = None
+        self.done = False
+        self.render()
 
     def step(self, action):
         if self.player.score == 21 :
@@ -125,25 +124,15 @@ class BlackJackEnv(gym.Env):
         if self.player.score == 0 :
             for i in range(len(self.player.hand)):
                 key = self.player.hand[i][0]
-                if key == "AS":
-                    print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
-                    x = input()
-                    if x == "n":
-                        score += 1
-                    else :
-                        score += 11
+                if key == "AS" and score < 11:
+                    score += 11
                 else :
                     score += self.card_value[key]
             self.player.score = score
         else :
             key = self.player.hand[-1][0]
-            if key == "AS":
-                print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
-                x = input()
-                if x == "n":
-                    self.player.score += 1
-                else :
-                    self.player.score += 11
+            if key == "AS" and score < 11:
+                score += 11
             else :
                 self.player.score += self.card_value[key]
 
