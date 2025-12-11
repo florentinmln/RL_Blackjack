@@ -37,8 +37,14 @@ class BlackJackEnv(gym.Env):
         self.player.hand = self.start_hand()
         self.dealer.hand = self.start_hand()
 
+        print("1 :")
+        self.render()
+
         self.score_dealer()
         self.score_player()
+
+        print("2")
+        self.render()
 
         # Define what the agent can observe
         # Dict space gives us structured, human-readable observations
@@ -61,7 +67,6 @@ class BlackJackEnv(gym.Env):
         self.window = None
         self.clock = None
         self.done = False
-        self.render()
 
     def step(self, action):
         if self.player.score == 21 :
