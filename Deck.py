@@ -13,9 +13,9 @@ class Deck():
                 self.deck.append((self.card[i] , "D"))
 
     def draw_card(self):
-        random_index = random.randint(0, len(self.deck))
+        random_index = random.randint(0, len(self.deck) - 1)
         card = self.deck[random_index]
-        self.deck.remove(random_index)
+        self.deck.pop(random_index)
         return card
     
     def reset(self, nb_card_game):
