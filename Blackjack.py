@@ -36,14 +36,8 @@ class BlackJackEnv(gym.Env):
         self.player.hand = self.start_hand()
         self.dealer.hand = self.start_hand()
 
-        print("1 :")
-        self.render()
-
         self.score_dealer()
         self.score_player()
-
-        print("2")
-        self.render()
 
         # Define what the agent can observe
         # Dict space gives us structured, human-readable observations
@@ -66,6 +60,7 @@ class BlackJackEnv(gym.Env):
         self.window = None
         self.clock = None
         self.done = False
+        self.render()
 
     def step(self, action):
         if self.player.score == 21 :
@@ -119,13 +114,8 @@ class BlackJackEnv(gym.Env):
         if self.player.score == 0 :
             for i in range(len(self.player.hand)):
                 key = self.player.hand[i][0]
-                if key == "AS":
-                    print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
-                    x = input()
-                    if x == "n":
-                        score += 1
-                    else :
-                        score += 11
+                if key == "AS" and i == 0:
+                    score += 11
                 else :
                     score += self.card_value[key]
             self.player.score = score
