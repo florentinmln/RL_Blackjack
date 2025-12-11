@@ -119,31 +119,53 @@ class BlackJackEnv(gym.Env):
     
     def score_player(self):
         score = 0
-        for i in range(len(self.player.hand)):
-            key = self.player.hand[i][0]
+        if self.player.score == 0 :
+            for i in range(len(self.player.hand)):
+                key = self.player.hand[i][0]
+                if key == "AS":
+                    print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
+                    x = input()
+                    if x == "n":
+                        score += 1
+                    else :
+                        score += 11
+                else :
+                    score += self.card_value[key]
+            self.player.score = score
+        else :
+            key = self.player.hand[-1][0]
             if key == "AS":
                 print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
                 x = input()
                 if x == "n":
-                    score += 1
+                    self.player.score += 1
                 else :
-                    score += 11
+                    self.player.score += 11
             else :
-                score += self.card_value[key]
-        self.player.score = score
+                self.player.score += self.card_value[key]
 
     def score_dealer(self):
         score = 0
-        for i in range(len(self.dealer.hand)):
-            key = self.dealer.hand[i][0]
-            if key == "AS":
-                if score < 11:
-                    score += 11
+        if self.dealer.score == 0 :
+            for i in range(len(self.dealer.hand)):
+                key = self.dealer.hand[i][0]
+                if key == "AS":
+                    if score < 11:
+                        score += 11
+                    else:
+                        score += 1
                 else:
-                    score += 1
+                    score += self.card_value[key]
+            self.dealer.score = score
+        else :
+            key = self.dealer.hand[-1][0]
+            if key == "AS":
+                if self.dealer.score < 11:
+                    self.dealer.score += 11
+                else:
+                    self.dealer.score += 1
             else:
-                score += self.card_value[key]
-        self.dealer.score = score
+                self.dealer.score += self.card_value[key]
 
     def reset(self):
         # A chaque fin de partie recréer une partie avec la seed pour gerer l'aleatoire.
