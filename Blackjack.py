@@ -11,6 +11,7 @@ class BlackJackEnv(gym.Env):
 
     def __init__(self, render_mode="debug", number_card: int = 5):
         # The number of cards in deck
+        self.render_mode = render_mode
         self.number_deck = number_card
         self.deck = Deck(number_card)
 
@@ -36,14 +37,16 @@ class BlackJackEnv(gym.Env):
 
         self.player.hand = self.start_hand()
         self.dealer.hand = self.start_hand()
+        
+        self.window = None
+        self.clock = None
+        self.done = False
 
-        print("1 :")
         self.render()
 
         self.score_dealer()
         self.score_player()
 
-        print("2")
         self.render()
 
         # Define what the agent can observe
@@ -61,12 +64,6 @@ class BlackJackEnv(gym.Env):
         # Map action numbers to actual movements on the grid
         # This makes the code more readable than using raw numbers
         self._action_to_direction = ["STAND", "PICK"]
-
-        self.render_mode = render_mode
-        
-        self.window = None
-        self.clock = None
-        self.done = False
 
     def step(self, action):
         if self.player.score == 21 :
