@@ -112,7 +112,7 @@ class BlackJackEnv(gym.Env):
         for i in range(len(self.player.hand)):
             key = self.player.hand[i][0]
             if key == "AS":
-                print("tu veut que ton As soit egale a 11? (yes :y, no : n)")
+                print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
                 x = input()
                 if x == "n":
                     self.player.score += 1
