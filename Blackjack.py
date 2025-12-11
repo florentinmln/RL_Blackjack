@@ -65,17 +65,6 @@ class BlackJackEnv(gym.Env):
         self.render()
 
     def step(self, action):
-        # if self.player.score == 21 :
-        #     self.dealer.lose += 1
-        #     self.player.win += 1
-        #     self.done = True
-
-        # elif self.dealer.score == 21:
-        #     self.dealer.win += 1
-        #     self.player.lose += 1
-        #     self.done = True
-
-        # else:
         if action == "STAND":
             while self.dealer.score < 17:
                 self.dealer.hand.append(self.deck.draw_card())
@@ -120,8 +109,8 @@ class BlackJackEnv(gym.Env):
         return hand
     
     def score_player(self):
-        score = 0
         if self.player.score == 0 :
+            score = 0
             for i in range(len(self.player.hand)):
                 key = self.player.hand[i][0]
                 if key == "AS" and score < 11:
@@ -132,17 +121,18 @@ class BlackJackEnv(gym.Env):
 
             if self.player.score == 21 :
                 self.done = True
-                self.render()
+                self.dealer.lose += 1
+                self.player.win += 1
         else :
             key = self.player.hand[-1][0]
-            if key == "AS" and score < 11:
-                score += 11
+            if key == "AS" and self.player.score < 11:
+                self.player.score += 11
             else :
                 self.player.score += self.card_value[key]
 
     def score_dealer(self):
-        score = 0
         if self.dealer.score == 0 :
+            score = 0
             for i in range(len(self.dealer.hand)):
                 key = self.dealer.hand[i][0]
                 if key == "AS":
@@ -156,7 +146,8 @@ class BlackJackEnv(gym.Env):
 
             if self.dealer.score == 21 :
                 self.done = True
-                self.render()
+                self.dealer.win += 1
+                self.player.lose += 1
 
         else :
             key = self.dealer.hand[-1][0]
