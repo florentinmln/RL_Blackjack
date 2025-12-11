@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 import sys
+import time
 
 from Deck import Deck
 from Player import Player
@@ -185,25 +186,28 @@ class BlackJackEnv(gym.Env):
         # On tire deux cartes pour reset la main du joueur
         self.player.hand = self.start_hand()
         
-        # On calcule le score du joueur.
-        self.score_player()
-
         # On réinitialise le score du dealer 
         self.dealer.reset()
 
         # On tire deux cartes pour la main initial du dealer 
         self.dealer.hand = self.start_hand()
-
+        
+        self.render()
+        
         # On calcule le score du dealer
         self.score_dealer()
-
+        
+        # On calcule le score du joueur.
+        self.score_player()
+        
         # On récupère ine observation de l'épisode en cours
         obs = self._get_obs()
         
         # Si on a besoin de faire un affichage on appelle la fonction render.
-        self.render()
         if self.render_mode == "human":
             self.render()
+        
+        self.render()
 
         # On retourne l'observation, si on veut on peut ajouter une fonction info et donc retourner cette valeur aussi. 
         return obs
@@ -216,9 +220,10 @@ class BlackJackEnv(gym.Env):
             print(f"Player: {self.player.hand} -> {self.player.score}")
 
             if(self.done):
-                print("ROUND FINISHED")
                 print(f"Dealer: W : {self.dealer.win} / L : {self.dealer.lose}")
                 print(f"Player: W : {self.player.win} / L : {self.player.lose}")
+                print("ROUND FINISHED\n\n\n")
+                time.sleep(2)
             else:
                 print("CONTINUE")
             print("--------------------------------------")
