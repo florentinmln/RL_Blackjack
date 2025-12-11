@@ -1,10 +1,9 @@
 import numpy as np
 import pygame
 import sys
-import time
+
 # Il faut l'installer sur nos machines.
 import gymnasium as gym
-
 
 # https://gymnasium.farama.org/introduction/create_custom_env/
 # C'est la doc de gym si il faut. 
@@ -37,8 +36,8 @@ class BlackJackEnv(gym.Env):
         self.player.score = 0
 
         # On tire deux cartes pour reset la main du joueur
-        self.player.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
-        self.player.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
+        self.player.hand.append(self.deck.draw_card())
+        self.player.hand.append(self.deck.draw_card())
         
         # On calcule le score du joueur.
         self.player.score_calcul()
@@ -175,5 +174,5 @@ class BlackJackEnv(gym.Env):
         # Un peu comme un toString, on définit comment on veut ecrire dans le terminal notre environnement.
         
         # Retourne la main et le score du player et du dealer
-        return {"player" : (self.player.hand, self.player.score),
-                "dealer" : (self.dealer.hand, self.dealer.score)}
+        return {"player" : (self.player.score),
+                "dealer" : (self.dealer.score)}
