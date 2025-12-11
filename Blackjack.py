@@ -2,7 +2,6 @@ import numpy as np
 import pygame
 import sys
 
-from typing import Optional
 from Deck import Deck
 from Player import Player
 import gymnasium as gym
@@ -43,8 +42,8 @@ class BlackJackEnv(gym.Env):
         # Dict space gives us structured, human-readable observations
         self.observation_space = gym.spaces.Dict(
             {
-                "agent": gym.spaces.Box(0, dtype=int),   # [x, y] coordinates
-                "target": gym.spaces.Box(0, dtype=int),  # [x, y] coordinates
+                "agent": gym.spaces.Box(0, dtype=int),''  
+                "target": gym.spaces.Box(0, dtype=int),
             }
         )
 
@@ -133,7 +132,6 @@ class BlackJackEnv(gym.Env):
                 self.player.score += self.card_value[key]
 
     def reset(self, seed: int):
-        # To DO
         # A chaque fin de partie recréer une partie avec la seed pour gerer l'aleatoire.
 
         # Important: permet de set la seed pour tout le random.
@@ -146,24 +144,22 @@ class BlackJackEnv(gym.Env):
         self.deck.reset()
 
         # On réinitialise le score du joueur mais pas le compteur de victoire et de défaite.
-        self.player.score = 0
+        self.player.reset()
 
         # On tire deux cartes pour reset la main du joueur
-        self.player.hand.append(self.deck.draw_card())
-        self.player.hand.append(self.deck.draw_card())
+        self.player.hand = self.start_hand()
         
         # On calcule le score du joueur.
-        self.player.score_calcul()
+        self.score_player()
 
         # On réinitialise le score du dealer 
-        self.dealer.score = 0
+        self.dealer.reset()
 
         # On tire deux cartes pour la main initial du dealer 
-        self.dealer.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
-        self.dealer.hand.append(self.deck.take_card(self.np_random.integers(0, self.deck.lenght())))
+        self.dealer.hand = self.start_hand()
 
         # On calcule le score du dealer
-        self.dealer.score_calcul()
+        self.score_dealer()
 
         # On récupère ine observation de l'épisode en cours
         obs = self._get_obs()
@@ -184,6 +180,8 @@ class BlackJackEnv(gym.Env):
 
             if(self.done):
                 print("ROUND FINISHED")
+                print(f"Dealer: W : {self.dealer.win} / L : {self.dealer.lose}")
+                print(f"Player: W : {self.player.win} / L : {self.player.lose}")
             else:
                 print("CONTINUE")
             print("--------------------------------------")
@@ -278,9 +276,7 @@ class BlackJackEnv(gym.Env):
             pygame.quit()
 
     def _get_obs(self):
-        # To Do
         # Un peu comme un toString, on définit comment on veut ecrire dans le terminal notre environnement.
-        
         # Retourne la main et le score du player et du dealer
         return {"player" : (self.player.score),
                 "dealer" : (self.dealer.score)}
