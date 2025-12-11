@@ -42,8 +42,8 @@ class BlackJackEnv(gym.Env):
         # Dict space gives us structured, human-readable observations
         self.observation_space = gym.spaces.Dict(
             {
-                "agent": gym.spaces.Box(0, dtype=int),''  
-                "target": gym.spaces.Box(0, dtype=int),
+                "agent": gym.spaces.Box(0, 30, dtype=int),   # [x, y] coordinates
+                "target": gym.spaces.Box(0, 30, dtype=int),  # [x, y] coordinates
             }
         )
 
@@ -59,6 +59,7 @@ class BlackJackEnv(gym.Env):
         self.window = None
         self.clock = None
         self.done = False
+        self.render()
 
     def step(self, action):
         if self.player.score == 21 :
@@ -108,28 +109,32 @@ class BlackJackEnv(gym.Env):
         return hand
     
     def score_player(self):
+        score = 0
         for i in range(len(self.player.hand)):
             key = self.player.hand[i][0]
             if key == "AS":
-                print("tu veut que ton As soit egale a 11? (yes :y, no : n)")
+                print("Tu veut que ton As soit égale à 11? (yes :y, no : n)")
                 x = input()
                 if x == "n":
-                    self.player.score += 1
+                    score += 1
                 else :
-                    self.player.score += 11
+                    score += 11
             else :
-                self.player.score += self.card_value[key]
+                score += self.card_value[key]
+        self.player.score = score
 
     def score_dealer(self):
+        score = 0
         for i in range(len(self.dealer.hand)):
             key = self.dealer.hand[i][0]
             if key == "AS":
                 if self.dealer.score < 11:
-                    self.dealer.score += 11
+                    score += 11
                 else:
-                    self.dealer.score += 1
+                    score += 1
             else:
-                self.player.score += self.card_value[key]
+                score += self.card_value[key]
+        self.dealer.score = score
 
     def reset(self, seed: int):
         # A chaque fin de partie recréer une partie avec la seed pour gerer l'aleatoire.
