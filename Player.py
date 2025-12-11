@@ -4,7 +4,6 @@ class Player():
         self.score = 0
         self.win = 0
         self.lose = 0
-        self.draw
         self.hand =[]
         self.role = role
 
