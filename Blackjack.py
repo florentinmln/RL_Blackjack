@@ -114,7 +114,7 @@ class BlackJackEnv(gym.Env):
         if self.player.score == 0 :
             for i in range(len(self.player.hand)):
                 key = self.player.hand[i][0]
-                if key == "AS" and i == 0:
+                if key == "AS" and score < 11:
                     score += 11
                 else :
                     score += self.card_value[key]
