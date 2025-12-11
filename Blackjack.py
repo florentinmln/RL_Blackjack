@@ -10,6 +10,7 @@ class BlackJackEnv(gym.Env):
 
     def __init__(self, render_mode="debug", number_card: int = 5):
         # The number of cards in deck
+        self.number_deck = number_card
         self.deck = Deck(number_card)
 
         self.card_value = {"AS" : 1,
@@ -77,8 +78,12 @@ class BlackJackEnv(gym.Env):
                 while self.dealer.score < 17:
                     self.dealer.hand.append(self.deck.draw_card())
                     self.score_dealer()
+                if self.dealer.score > 21:
+                    self.dealer.lose += 1
+                    self.player.win += 1
+                    self.done = True
 
-                if self.player.score <= self.dealer.score:
+                elif self.player.score <= self.dealer.score:
                     self.dealer.win += 1
                     self.player.lose += 1
                     self.done = True
@@ -95,6 +100,10 @@ class BlackJackEnv(gym.Env):
                 if self.player.score > 21:
                     self.dealer.win += 1
                     self.player.lose += 1
+                    self.done = True
+                elif self.player.score == 21:
+                    self.dealer.lose += 1
+                    self.player.win += 1
                     self.done = True
                     
             else :
@@ -128,7 +137,7 @@ class BlackJackEnv(gym.Env):
         for i in range(len(self.dealer.hand)):
             key = self.dealer.hand[i][0]
             if key == "AS":
-                if self.dealer.score < 11:
+                if score < 11:
                     score += 11
                 else:
                     score += 1
@@ -136,17 +145,17 @@ class BlackJackEnv(gym.Env):
                 score += self.card_value[key]
         self.dealer.score = score
 
-    def reset(self, seed: int):
+    def reset(self):
         # A chaque fin de partie recréer une partie avec la seed pour gerer l'aleatoire.
 
         # Important: permet de set la seed pour tout le random.
-        super().reset(seed=seed)
+        super().reset()
         
         # On reset la variable qui finit un épisode.
         self.done = False
 
         # On utilise la fonction reset de l'objet deck pour recommencer un épisode.
-        self.deck.reset()
+        self.deck.reset(self.number_deck)
 
         # On réinitialise le score du joueur mais pas le compteur de victoire et de défaite.
         self.player.reset()
@@ -170,6 +179,7 @@ class BlackJackEnv(gym.Env):
         obs = self._get_obs()
         
         # Si on a besoin de faire un affichage on appelle la fonction render.
+        self.render()
         if self.render_mode == "human":
             self.render()
 

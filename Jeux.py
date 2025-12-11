@@ -3,7 +3,7 @@ from Blackjack import BlackJackEnv
 
 blackjack = BlackJackEnv()
 
-while(True):
+for i in range(5):
     while(not blackjack.done) :
         print("Choose your action. (Stand : s, Pick : p)")
         action = input()
@@ -13,3 +13,7 @@ while(True):
             blackjack.step("PICK")
         else :
             print("tu n'a pas fait le bon choix")
+    
+    if i < 5 - 1 :
+        blackjack.reset()
+        blackjack.render()
