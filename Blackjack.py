@@ -65,51 +65,51 @@ class BlackJackEnv(gym.Env):
         self.render()
 
     def step(self, action):
-        if self.player.score == 21 :
-            self.dealer.lose += 1
-            self.player.win += 1
-            self.done = True
+        # if self.player.score == 21 :
+        #     self.dealer.lose += 1
+        #     self.player.win += 1
+        #     self.done = True
 
-        elif self.dealer.score == 21:
-            self.dealer.win += 1
-            self.player.lose += 1
-            self.done = True
+        # elif self.dealer.score == 21:
+        #     self.dealer.win += 1
+        #     self.player.lose += 1
+        #     self.done = True
 
-        else:
-            if action == "STAND":
-                while self.dealer.score < 17:
-                    self.dealer.hand.append(self.deck.draw_card())
-                    self.score_dealer()
-                if self.dealer.score > 21:
-                    self.dealer.lose += 1
-                    self.player.win += 1
-                    self.done = True
+        # else:
+        if action == "STAND":
+            while self.dealer.score < 17:
+                self.dealer.hand.append(self.deck.draw_card())
+                self.score_dealer()
+            if self.dealer.score > 21:
+                self.dealer.lose += 1
+                self.player.win += 1
+                self.done = True
 
-                elif self.player.score <= self.dealer.score:
-                    self.dealer.win += 1
-                    self.player.lose += 1
-                    self.done = True
+            elif self.player.score <= self.dealer.score:
+                self.dealer.win += 1
+                self.player.lose += 1
+                self.done = True
 
-                else :
-                    self.dealer.lose += 1
-                    self.player.win += 1
-                    self.done = True
-
-            elif action == "PICK":
-                self.player.hand.append(self.deck.draw_card())
-                self.score_player()
-
-                if self.player.score > 21:
-                    self.dealer.win += 1
-                    self.player.lose += 1
-                    self.done = True
-                elif self.player.score == 21:
-                    self.dealer.lose += 1
-                    self.player.win += 1
-                    self.done = True
-                    
             else :
-                print("voue voue")
+                self.dealer.lose += 1
+                self.player.win += 1
+                self.done = True
+
+        elif action == "PICK":
+            self.player.hand.append(self.deck.draw_card())
+            self.score_player()
+
+            if self.player.score > 21:
+                self.dealer.win += 1
+                self.player.lose += 1
+                self.done = True
+            elif self.player.score == 21:
+                self.dealer.lose += 1
+                self.player.win += 1
+                self.done = True
+                
+        else :
+            print("Pas une bonne action")
         
         self.render()
         
@@ -129,6 +129,10 @@ class BlackJackEnv(gym.Env):
                 else :
                     score += self.card_value[key]
             self.player.score = score
+
+            if self.player.score == 21 :
+                self.done = True
+                self.render()
         else :
             key = self.player.hand[-1][0]
             if key == "AS" and score < 11:
@@ -149,6 +153,11 @@ class BlackJackEnv(gym.Env):
                 else:
                     score += self.card_value[key]
             self.dealer.score = score
+
+            if self.dealer.score == 21 :
+                self.done = True
+                self.render()
+
         else :
             key = self.dealer.hand[-1][0]
             if key == "AS":
@@ -182,9 +191,7 @@ class BlackJackEnv(gym.Env):
 
         # On tire deux cartes pour la main initial du dealer 
         self.dealer.hand = self.start_hand()
-        
-        self.render()
-        
+                
         # On calcule le score du dealer
         self.score_dealer()
         
@@ -213,7 +220,7 @@ class BlackJackEnv(gym.Env):
             if(self.done):
                 print(f"Dealer: W : {self.dealer.win} / L : {self.dealer.lose}")
                 print(f"Player: W : {self.player.win} / L : {self.player.lose}")
-                print("ROUND FINISHED\n\n\n")
+                print("ROUND FINISHED")
                 time.sleep(2)
             else:
                 print("CONTINUE")
